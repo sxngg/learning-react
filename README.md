@@ -40,3 +40,13 @@ npm install standard -D
 Add eslintConfig in package.json
     <img alt="create vite" src="./assets/eslint-package-json.png" width="300" />
 
+## Test
+Into project folder, for example projects/03-technical-test
+```
+npm init playwright@latest
+```
+<img alt="create vite" src="./assets/test.png" width="300" />
+
+```
+npx playwright test
+```
