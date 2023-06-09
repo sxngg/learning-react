@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  place-items: center;
+  flex-direction: column;
+}
+
+.page h1 {
+  text-align: center;
+}
+
+.page form {
+  display: flex;
+  place-items: center;
+}
