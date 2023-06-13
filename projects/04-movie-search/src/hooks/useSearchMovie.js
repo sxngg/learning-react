@@ -1,20 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
+import { searchMovies } from '../services/movies'
 
-const OMDBAPI_URL = 'http://www.omdbapi.com/?apikey='
-const API_KEY = 'e44d5204'
-// const movieSearched = 'Harry'
-
-export function useSearchMovie (movieSearched) {
+export function useSearchMovie ({ search, sort }) {
   const [listMovies, setListMovies] = useState([])
+  const previousSearch = useRef(search)
 
-  useEffect(() => {
-    fetch(`${OMDBAPI_URL}${API_KEY}&s=${movieSearched}`)
-      .then(res => res.json())
-      .then(data => {
-        const { Search } = data
-        setListMovies(Search)
-      })
-  }, [movieSearched])
+  const getMovies = useCallback(async ({ search }) => {
+    if (search === previousSearch.current) return
+    try {
+      previousSearch.current = search
+      const newMovies = await searchMovies({ search })
+      setListMovies(newMovies)
+    } catch (e) {
+      throw new Error('Error with searching')
+    }
+  }, [])
 
-  return { listMovies }
+  const sortedMovies = useMemo(() => {
+    return sort
+      ? [...listMovies].sort((a, b) => a.title.localeCompare(b.title))
+      : listMovies
+  }, [sort, listMovies])
+
+  return { listMovies: sortedMovies, sortedMovies, getMovies }
 }

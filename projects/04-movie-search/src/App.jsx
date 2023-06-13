@@ -1,20 +1,24 @@
-// import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { useSearchMovie } from './hooks/useSearchMovie'
 import { Movies } from './components/Movies'
 import { useSearch } from './hooks/useSearch'
-// import responseMovies from './mocks/with-results.json'
-// import withoutMovies from './mocks/no-results.json'
+import { useCallback, useState } from 'react'
+import debounce from 'just-debounce-it'
 
 function App () {
-  // const [movieSearched, setMovieSearched] = useState('Harry')
-  // const [query, setQuery] = useState('')
+  const [sort, setSort] = useState(false)
   const { search, setSearch, error } = useSearch()
-  const { listMovies } = useSearchMovie(search)
+  const { listMovies, getMovies } = useSearchMovie({ search, sort })
+
+  const debounceGetMovies = useCallback(
+    debounce(search => {
+      getMovies({ search })
+    }, 300), [getMovies]
+  )
 
   function handleSubmit (event) {
     event.preventDefault()
-    console.log({ search })
+    getMovies({ search })
     /**
     event.preventDefault()
     /**
@@ -32,6 +36,11 @@ function App () {
   function handleChange (event) {
     const newSearch = event.target.value
     setSearch(newSearch)
+    debounceGetMovies(newSearch)
+  }
+
+  function handleSort () {
+    setSort(!sort)
   }
 
   return (
@@ -40,6 +49,7 @@ function App () {
         <h1> Movie Search </h1>
         <form className='form' onSubmit={handleSubmit}>
           <input style={{ border: '1px solid transparent', borderColor: error ? 'red' : 'transparent' }} onChange={handleChange} value={search} name='query' />
+          <input type='checkbox' onChange={handleSort} checked={sort} />
           <button type='submit'> Find </button>
         </form>
         {error && <p style={{ color: 'red' }}>{error}</p>}

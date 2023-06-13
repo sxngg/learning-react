@@ -4,6 +4,12 @@
   flex-direction: column;
 }
 
+main {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .page h1 {
   text-align: center;
 }
@@ -11,4 +17,19 @@
 .page form {
   display: flex;
   place-items: center;
+}
+
+.movies {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 2rem;
+}
+
+.movie {
+  text-align: center;
+}
+
+.movie img {
+  border-radius: 2rem;
 }
